@@ -1,4 +1,6 @@
-import { createClient } from '../utils/supabase/server'; // (경로가 안 맞으면 '@/utils/supabase/server' 로 수정)
+import BottomNav from '@/components/common/BottomNav';
+import { createClient } from '../utils/supabase/server';
+import Header from '@/components/common/Header';
 
 export default async function Home() {
   // 1. 슈퍼베이스 연결!
@@ -8,8 +10,11 @@ export default async function Home() {
   const { data, error } = await supabase.auth.getSession();
 
   return (
-    <main className='p-10 font-sans'>
-      <h1 className='mb-4 text-3xl font-bold'>🚀 Supabase 연결 테스트</h1>
+    <main className='p-10'>
+      <Header />
+      <h1 className='mb-4 text-3xl font-bold'>
+        🚀 Supabase 연결 테스트!!!!???
+      </h1>
 
       <div className='rounded-lg bg-gray-100 p-4 shadow'>
         <h2 className='mb-2 text-lg font-semibold'>테스트 결과:</h2>
@@ -17,6 +22,7 @@ export default async function Home() {
           {JSON.stringify({ data, error }, null, 2)}
         </pre>
       </div>
+      <BottomNav />
     </main>
   );
 }
