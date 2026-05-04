@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import RecentSearches from './_components/RecentSearches';
 import SearchResults from './_components/SearchResults';
 import SearchBar from './_components/SearchBar';
 import TrendingKeywords from './_components/TrendingKeywords';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const mockResults = [
   {
@@ -33,24 +34,33 @@ const mockResults = [
 const initialRecentSearches = ['아이브 포카', '건담 프라모델', '세일러문 굿즈'];
 
 export default function SearchPage() {
-  const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const currentQuery = searchParams.get('q'); // url에서 q값 가져오기
+
+  const [searchQuery, setSearchQuery] = useState(currentQuery || '');
   const [isSearching, setIsSearching] = useState(false);
   const [recentSearches, setRecentSearches] = useState(initialRecentSearches);
 
   const handleSearch = (query: string) => {
     if (query.trim()) {
-      setSearchQuery(query);
-      setIsSearching(true);
+      // 최근 검색어 추가
       if (!recentSearches.includes(query)) {
         setRecentSearches([query, ...recentSearches.slice(0, 4)]);
       }
+      //state 바꾸는 대신에 URL 이동시키기 브라우저 방문 기록이 쌓여서 뒤로가기 함
+      router.push(`/search?q=${encodeURIComponent(query)}`);
     }
   };
 
   const handleClear = () => {
     setSearchQuery('');
-    setIsSearching(false);
+    router.push('/search');
   };
+
+  useEffect(() => {
+    setSearchQuery(currentQuery || '');
+  }, [currentQuery]);
 
   return (
     <div className='bg-background min-h-screen'>
@@ -60,7 +70,7 @@ export default function SearchPage() {
         onSearch={handleSearch}
         onClear={handleClear}
       />
-      {!isSearching ? (
+      {!currentQuery ? (
         <div className='space-y-6 p-4'>
           <RecentSearches
             searches={recentSearches}
@@ -73,7 +83,7 @@ export default function SearchPage() {
           <TrendingKeywords onSearch={handleSearch} />
         </div>
       ) : (
-        <SearchResults query={searchQuery} results={mockResults} />
+        <SearchResults query={currentQuery} results={mockResults} />
       )}
     </div>
   );
