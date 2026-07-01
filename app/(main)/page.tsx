@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import CategoryFilter from '../_components/CategoryFilter';
-import ProductGrid from '../_components/ProductGrid';
+import CategoryFilter from './_components/CategoryFilter';
+import ProductGrid from './_components/ProductGrid';
 
 const mockProducts = [
   {
